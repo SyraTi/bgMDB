@@ -10,7 +10,11 @@ bgMDB的整体思路是 **TMDB获取番剧信息->使用蜜柑计划RSS获取下
 
 *PS：未来的路线可能开放其他RSS源及下载工具或者可自定义
 
-
+## 一条命令订阅
+```shell
+# 使用TMDB链接进行订阅
+> bgmdb add 'https://www.themoviedb.org/tv/94631'
+```
 
 ## 部署
 使用docker（推荐）
@@ -187,9 +191,11 @@ bgmdb remove 放課後ていぼう日誌
 ### 设置当前订阅进度
 ```shell
 # 设置成功后 下一次bgmdb update将会从设置的集数开始下载
-bgmdb mark 放学后海堤日记 1
+bgmdb mark 放学后海堤日记 S1 1
 ```
 
+## Thanks
+灵感来源：[BGmi/BGmi](https://github.com/BGmi/BGmi)
 
-
+*由于BGmi设计上追求简洁，对EMBY/jellyfin/plex不做考虑，而我对于python也不尽熟悉，因此使用熟悉的node完成了本项目。
 

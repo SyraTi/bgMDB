@@ -148,7 +148,7 @@ export default class MikanAni {
     return new Promise<string>((resolve) => {
       rl.question(
         `请输入《${season.index}-${season.title}》对应的蜜柑计划RSS链接，如需要略过本季可以直接留空\n` +
-          '例如：https://mikanani.me/RSS/Bangumi?bangumiId=2797&subgroupid=382\n',
+          '例如：https://mikanani.me/RSS/Bangumi?bangumiId=2206&subgroupid=37\n',
         (answer: string) => {
           if (!answer) {
             resolve('')

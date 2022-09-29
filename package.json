@@ -9,7 +9,7 @@
     "test:add": "dotenv -e .env ts-node src/bgmdb.ts add 'https://www.themoviedb.org/tv/94631'",
     "test:list": "dotenv -e .env ts-node src/bgmdb.ts list",
     "test:update": "dotenv -e .env ts-node src/bgmdb.ts update",
-    "test:mark": "dotenv -e .env ts-node src/bgmdb.ts mark 狂赌之渊：双 S1 5",
+    "test:mark": "dotenv -e .env ts-node src/bgmdb.ts mark 放学后海堤日记 S1 5",
     "test:organize": "dotenv -e .env ts-node src/bgmdb.ts organize"
   },
   "repository": {
