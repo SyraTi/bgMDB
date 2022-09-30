@@ -136,37 +136,41 @@ enum ACTIONS {
         for (let i = 0; i < session.bangumi.length; i++) {
           const notCompletes = []
           for (let j = 0; j < session.bangumi[i].downloadTasks.length; j++) {
-            const task = session.bangumi[i].downloadTasks[j]
-            const { followedBy } = await aria2Conn.call(
-              'tellStatus',
-              task.gid,
-              ['followedBy']
-            )
-            if (!followedBy || !followedBy[0]) {
-              continue
-            }
-            const { status, files } = await aria2Conn.call(
-              'tellStatus',
-              followedBy[0],
-              ['status', 'files']
-            )
-            console.log(
-              `发现任务, status->${status}, 包含 ${files?.[0].path} 等文件。 `
-            )
-            if (status === 'complete') {
-              files.forEach((file: { path: string }) => {
-                const oldPath = file.path
-                const newPath = path.resolve(
-                  file.path,
-                  `../${task.episode}${path.extname(file.path)}`
-                )
-                console.log(
-                  `正在重命名文件，oldPath->${oldPath}, newPath->${newPath}`
-                )
-                fs.renameSync(oldPath, newPath)
-              })
-            } else {
-              notCompletes.push(task)
+            try {
+              const task = session.bangumi[i].downloadTasks[j]
+              const { followedBy } = await aria2Conn.call(
+                'tellStatus',
+                task.gid,
+                ['followedBy']
+              )
+              if (!followedBy || !followedBy[0]) {
+                continue
+              }
+              const { status, files } = await aria2Conn.call(
+                'tellStatus',
+                followedBy[0],
+                ['status', 'files']
+              )
+              console.log(
+                `发现任务, status->${status}, 包含 ${files?.[0].path} 等文件。 `
+              )
+              if (status === 'complete') {
+                files.forEach((file: { path: string }) => {
+                  const oldPath = file.path
+                  const newPath = path.resolve(
+                    file.path,
+                    `../${task.episode}${path.extname(file.path)}`
+                  )
+                  console.log(
+                    `正在重命名文件，oldPath->${oldPath}, newPath->${newPath}`
+                  )
+                  fs.renameSync(oldPath, newPath)
+                })
+              } else {
+                notCompletes.push(task)
+              }
+            } catch (e) {
+              console.log('任务异常，bgmdb无法继续追踪，请手动进行调整！', e)
             }
           }
           session.bangumi[i].downloadTasks = notCompletes
