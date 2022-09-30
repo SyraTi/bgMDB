@@ -1,9 +1,11 @@
 {
   "name": "bgmdb",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A CLI tool for subscribing to bangumi on TMDB.",
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "lint": "eslint '**/*.{js,ts}' --ignore-path .gitignore --fix",
