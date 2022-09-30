@@ -1,3 +1,2 @@
 #!/bin/sh
-bgmdb update
-bgmdb organize
+bgmdb update >> /dev/null && bgmdb organize >> /dev/null
