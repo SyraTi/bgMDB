@@ -8,7 +8,7 @@ bgMDB的初衷是为了自动化 **番剧订阅+EMBY/jellyfin/plex元数据刮�
 ## 整体思路
 bgMDB的整体思路是 **TMDB获取番剧信息->使用蜜柑计划RSS获取下载链接->发送至Aria2下载**
 
-*PS：未来的路线可能开放其他RSS源及下载工具或者可自定义
+*PS：未来的路线可能开放其他RSS源及下载工具或者可自定义，见：[TODO](https://github.com/SyraTi/bgMDB#TODO)
 
 ## 一条命令订阅
 ```shell
@@ -193,6 +193,13 @@ bgmdb remove 放課後ていぼう日誌
 # 设置成功后 下一次bgmdb update将会从设置的集数开始下载
 bgmdb mark 放学后海堤日记 S1 1
 ```
+
+## TODO
+- 由于docker不完全依赖npm包，所以不需要同步版本号发布，近期会将docker与npm包拆分成两个仓库
+- 由于aria下载未完成的文件可能也会被EMBY/jellyfin/plex扫描到，造成观看体验的影响，后续可能会考虑增加临时目录，下载完成后再移动到目标位置。
+- 由于本仓库使用了TMDB作为**番剧名称/发布年份/季/话**的信息来源，未来解析更多的元数据，直接完成元信息的刮削似乎也是可行的。
+- 在有足够的精力下，会考虑将RSS相关逻辑封装抽象出来，允许继承以实现更多的RSS源。
+- 同样，在有足够的精力下，会考虑兼容更多的下载工具，例如Transmission等。
 
 ## Thanks
 灵感来源：[BGmi/BGmi](https://github.com/BGmi/BGmi)
