@@ -142,6 +142,9 @@ enum ACTIONS {
               task.gid,
               ['followedBy']
             )
+            if (!followedBy || !followedBy[0]) {
+              continue
+            }
             const { status, files } = await aria2Conn.call(
               'tellStatus',
               followedBy[0],
