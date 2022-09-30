@@ -8,13 +8,9 @@ import aria2Conn from './aria2Conn.js'
 
 const args: string[] = process.argv.slice(2)
 const BGMDB_SESSION_PATH = process.env.BGMDB_SESSION_PATH ?? './bgmdb.session'
-const BGMDB_CONFIG_PATH = process.env.BGMDB_CONFIG_PATH ?? './config'
 
 if (!fs.existsSync(BGMDB_SESSION_PATH)) {
   fs.writeFileSync(BGMDB_SESSION_PATH, JSON.stringify({ bangumi: [] }))
-}
-if (!fs.existsSync(BGMDB_CONFIG_PATH)) {
-  fs.mkdirSync(BGMDB_CONFIG_PATH, { recursive: true })
 }
 enum ACTIONS {
   ADD = 'add',

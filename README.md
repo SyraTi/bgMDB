@@ -21,13 +21,14 @@ bgMDB的整体思路是 **TMDB获取番剧信息->使用蜜柑计划RSS获取下
 ```shell
 docker pull syrati/bgmdb
 # 这里用到的环境变量会在下文逐个讲解，请按照自己的实际情况填写
+# 建议将/home/bgmdb/data目录挂载至宿主机，后续更新能够保留订阅信息
 docker run -d \
   -e BGMDB_SAVE_PATH='/path/to/save_bangumi' \
   -e BGMDB_ARIA2_HOST='aria2.xxx.com' \
   -e BGMDB_ARIA2_PORT=6800 \
   -e BGMDB_ARIA2_SECRET='' \
-  -e BGMDB_SESSION_PATH='/root/bgmdb/bgmdb.session' \
-  -e BGMDB_CONFIG_PATH='/root/bgmdb/bgmdb.config' \
+  -e BGMDB_SESSION_PATH='/home/bgmdb/data/bgmdb.session' \
+  -v ~/bgmdb/data:/home/bgmdb/data \ 
   syrati/bgmdb
 ```
 使用node
@@ -44,7 +45,6 @@ export .... #环境变量同上
 | BGMDB_ARIA2_PORT | Aria2的JSONRPC端口，如果没有对Aria2的配置做过更改，可以直接使用默认值6800       |
 | BGMDB_ARIA2_SECRET | Aria2的JSONRPC SECRET                                  |
 | BGMDB_SESSION_PATH | bgMDB的session路径，一般情况下无需更改                             |
-| BGMDB_CONFIG_PATH | bgMDB的config路径，一般情况下无需更改                              |
 
 ## 使用
 ### 订阅番剧
