@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import fs from 'fs'
 import path from 'path'
+import { program } from 'commander'
 import MikanAni from './MikanAni.class.js'
 import TMDB from './TMDB.class.js'
 import rl from './readline.js'
 import aria2Conn from './aria2Conn.js'
 
-const args: string[] = process.argv.slice(2)
 const BGMDB_SESSION_PATH = process.env.BGMDB_SESSION_PATH ?? './bgmdb.session'
 
 if (!fs.existsSync(BGMDB_SESSION_PATH)) {
@@ -26,9 +26,11 @@ enum ACTIONS {
   )
   session.bangumi = session.bangumi || []
   try {
-    switch (args[0]) {
-      case ACTIONS.ADD: {
-        const tmdbLink: string = args[1]
+    program
+      .command(ACTIONS.ADD)
+      .description('新增番剧订阅')
+      .argument('<tmdb-url>', 'TMDB链接')
+      .action(async (tmdbLink) => {
         let metaInfo = await TMDB.parse(tmdbLink)
         console.log('解析成功！', metaInfo)
         if (session.bangumi.find((bgm) => bgm.id === metaInfo.id)) {
@@ -41,7 +43,7 @@ enum ACTIONS {
               }
             )
           })
-          if (!ifContinue) break
+          if (!ifContinue) return
         }
         metaInfo = await MikanAni.match(metaInfo)
         session.bangumi = session.bangumi.filter(
@@ -50,9 +52,11 @@ enum ACTIONS {
         session.bangumi.push(metaInfo)
         fs.writeFileSync(BGMDB_SESSION_PATH, JSON.stringify(session))
         console.log('任务已结束！')
-        break
-      }
-      case ACTIONS.UPDATE: {
+      })
+    program
+      .command(ACTIONS.UPDATE)
+      .description('更新番剧订阅')
+      .action(async () => {
         for (let i = 0; i < session.bangumi.length; i++) {
           session.bangumi[i].downloadTasks = [
             ...session.bangumi[i].downloadTasks,
@@ -60,18 +64,22 @@ enum ACTIONS {
           ]
         }
         fs.writeFileSync(BGMDB_SESSION_PATH, JSON.stringify(session))
-        break
-      }
-      case ACTIONS.LIST: {
+      })
+    program
+      .command(ACTIONS.LIST)
+      .description('查看订阅列表')
+      .action(() => {
         session.bangumi.forEach((bgm, index) => {
           console.log(
             `${index + 1}.${bgm.chineseName}/${bgm.localName}${bgm.releaseDate}`
           )
         })
-        break
-      }
-      case ACTIONS.REMOVE: {
-        const targetName: string = args[1]
+      })
+    program
+      .command(ACTIONS.REMOVE)
+      .description('删除指定订阅')
+      .argument('<bangumi-name>', '番剧译名or原产地名称')
+      .action((targetName) => {
         const target = session.bangumi.find(
           (bgm) =>
             bgm.chineseName === targetName || bgm.localName === targetName
@@ -87,18 +95,22 @@ enum ACTIONS {
           )
         }
         fs.writeFileSync(BGMDB_SESSION_PATH, JSON.stringify(session))
-        break
-      }
-      case ACTIONS.MARK: {
-        const targetName: string = args[1]
-        const targetSeasonKey: string = args[2]
+      })
+
+    program
+      .command(ACTIONS.MARK)
+      .description('标记番剧下载进度')
+      .argument('<bangumi-name>', '番剧译名or原产地名称')
+      .argument('<season>', '需要设置进度的季，例如S1、S2')
+      .argument('<episode>', '需要设置的集数进度，从0开始')
+      .action((targetName, targetSeasonKey, targetProgress) => {
         if (
           targetName &&
           targetSeasonKey &&
-          args[3] !== undefined &&
-          !Number.isNaN(Number(args[3]))
+          targetProgress !== undefined &&
+          !Number.isNaN(Number(targetProgress))
         ) {
-          const targetProgress: number = Number(args[3])
+          targetProgress = Number(targetProgress)
           const targetBangumi = session.bangumi.find(
             (bgm) =>
               bgm.chineseName === targetName || bgm.localName === targetName
@@ -130,9 +142,12 @@ enum ACTIONS {
             `'${targetBangumi.chineseName}/${targetBangumi.localName}${targetBangumi.releaseDate}-${targetSeason.index}${targetSeason.title} 的当前进度已经被设置为${targetProgress}！`
           )
         }
-        break
-      }
-      case ACTIONS.ORGANIZE:
+      })
+
+    program
+      .command(ACTIONS.ORGANIZE)
+      .description('整理文件目录树，方便元数据刮削')
+      .action(async () => {
         for (let i = 0; i < session.bangumi.length; i++) {
           const notCompletes = []
           for (let j = 0; j < session.bangumi[i].downloadTasks.length; j++) {
@@ -176,10 +191,9 @@ enum ACTIONS {
           session.bangumi[i].downloadTasks = notCompletes
         }
         fs.writeFileSync(BGMDB_SESSION_PATH, JSON.stringify(session))
-        break
-      default:
-        break
-    }
+      })
+
+    await program.parseAsync(process.argv)
   } catch (e) {
     console.log(e)
   }
