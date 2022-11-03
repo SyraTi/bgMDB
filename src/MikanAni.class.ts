@@ -4,7 +4,11 @@ import CN2Arabic from 'chinese-numbers-to-arabic'
 import rl from './readline.js'
 import aria2Conn from './aria2Conn.js'
 
-const rssParser = new Parser()
+const rssParser = new Parser<{}, { torrent: { pubDate: [Date] } }>({
+  customFields: {
+    item: ['torrent'],
+  },
+})
 
 const FETCH_EPISODE_WITH_BRACKETS = new RegExp(
   '[【\\[]E?(\\d+)\\s?(?:END)?[】\\]]'
@@ -273,6 +277,17 @@ export default class MikanAni {
   ): BangumiEpisode[] {
     episodes = episodes.filter((ep: BangumiEpisode) => ep.index !== -1)
     let exp: RegExp
+    // 按照title去重
+    episodes = episodes.reduce((eps: BangumiEpisode[], cur: BangumiEpisode) => {
+      const prev = eps.find((ep) => ep.title === cur.title)
+      if (prev) {
+        if (prev.pubDate.getTime() < cur.pubDate.getTime()) {
+          return [...eps.filter((ep) => ep.title !== cur.title), cur]
+        }
+        return eps
+      }
+      return eps.concat([cur])
+    }, [])
     if (filter.includes) {
       exp = new RegExp(
         `(${filter.includes
@@ -409,11 +424,14 @@ export default class MikanAni {
     url: string
   ): Promise<BangumiEpisode[]> {
     const feed = await rssParser.parseURL(url)
-    return feed.items.map((item: Parser.Item) => ({
+    return feed.items.map((item) => ({
       title: item.title || '',
       link: item.link || '',
       torrent: item.enclosure?.url || '',
       index: this._parseEpisodeNumber(item.title || ''),
+      pubDate: item.torrent.pubDate?.[0]
+        ? new Date(item.torrent.pubDate?.[0])
+        : new Date(0),
     }))
   }
 }

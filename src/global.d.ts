@@ -8,6 +8,7 @@ type BangumiEpisode = {
   link: string
   torrent: string
   index: number
+  pubDate: Date
 }
 
 type BangumiSeason = {
