@@ -9,6 +9,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint '**/*.{js,ts}' --ignore-path .gitignore --fix",
+    "release": "npm run build && npm version patch -m \"New Version: %s\" && git push --follow-tags",
     "test:add": "dotenv -e .env ts-node src/bgmdb.ts add 'https://www.themoviedb.org/tv/94631'",
     "test:list": "dotenv -e .env ts-node src/bgmdb.ts list",
     "test:update": "dotenv -e .env ts-node src/bgmdb.ts update",
