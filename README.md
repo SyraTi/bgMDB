@@ -37,6 +37,12 @@ npm install -g bgmdb
 export BGMDB_SAVE_PATH='/path/to/save_bangumi'
 export .... #环境变量同上 
 ```
+
+## 升级最新版本
+```shell
+npm install -g bgmdb@latest
+```
+
 ### 环境变量
 | 变量名             | 描述                                                    |
 |-----------------|-------------------------------------------------------|
