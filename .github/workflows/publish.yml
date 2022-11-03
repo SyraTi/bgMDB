@@ -1,0 +1,24 @@
+name: Publish To NPM
+on:
+  push:
+    tags: 'v**'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    name: 'publish to npm'
+    steps:
+      - name: Exit if not on main branch
+        if: ${{ endsWith(github.event.base_ref, 'main') == false }}
+        run: exit -1
+
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: rm -rf node_modules && yarn install --frozen-lockfile
+      - run: yarn build
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
