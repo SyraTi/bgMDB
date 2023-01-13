@@ -310,9 +310,9 @@ export default class MikanAni {
       exp = new RegExp(regexp[0], regexp[1])
       episodes = episodes.filter((ep) => !exp.test(ep.title))
     }
-    if (filter.HashBlackList) {
+    if (filter.hashBlackList) {
       episodes = episodes.filter(
-        (ep) => !filter.HashBlackList?.includes(ep.torrentHash)
+        (ep) => !filter.hashBlackList?.includes(ep.torrentHash)
       )
     }
     return episodes
@@ -408,18 +408,18 @@ export default class MikanAni {
           rl.write(filter.regexp)
         }
       })
-      filter.HashBlackList = await new Promise((resolve) => {
+      filter.hashBlackList = await new Promise((resolve) => {
         rl.question(
           `请输入想要排除的特征值，多个请以英文逗号(,)隔开, 当前值：${
-            filter?.HashBlackList || '无'
+            filter?.hashBlackList || '无'
           }\n`,
-          (HashBlackList: string) => {
-            if (!HashBlackList) resolve(undefined)
-            resolve(HashBlackList.split(','))
+          (hashBlackList: string) => {
+            if (!hashBlackList) resolve(undefined)
+            resolve(hashBlackList.split(','))
           }
         )
-        if (filter?.HashBlackList?.length) {
-          rl.write(filter.HashBlackList.join(','))
+        if (filter?.hashBlackList?.length) {
+          rl.write(filter.hashBlackList.join(','))
         }
       })
       return this._buildEpisodeFilter(episodes, filter)

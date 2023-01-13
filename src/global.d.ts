@@ -2,7 +2,7 @@ type BangumiEpisodesFilter = {
   includes?: string[]
   excludes?: string[]
   regexp?: string
-  HashBlackList?: string[]
+  hashBlackList?: string[]
 }
 type BangumiEpisode = {
   title: string
