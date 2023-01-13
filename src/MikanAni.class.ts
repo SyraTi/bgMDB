@@ -310,6 +310,11 @@ export default class MikanAni {
       exp = new RegExp(regexp[0], regexp[1])
       episodes = episodes.filter((ep) => !exp.test(ep.title))
     }
+    if (filter.HashBlackList) {
+      episodes = episodes.filter(
+        (ep) => !filter.HashBlackList?.includes(ep.torrentHash)
+      )
+    }
     return episodes
   }
 
@@ -329,7 +334,10 @@ export default class MikanAni {
 
     console.log(
       '当前筛选后的结果如下：',
-      filterResult.map((ep) => `第${ep.index}话 | 标题：${ep.title}`)
+      filterResult.map(
+        (ep) =>
+          `特征值：${ep.torrentHash} | 第${ep.index}话 | 标题：${ep.title}`
+      )
     )
 
     const timeCounter = filterResult.reduce<Map<number, number>>(
@@ -400,6 +408,20 @@ export default class MikanAni {
           rl.write(filter.regexp)
         }
       })
+      filter.HashBlackList = await new Promise((resolve) => {
+        rl.question(
+          `请输入想要排除的特征值，多个请以英文逗号(,)隔开, 当前值：${
+            filter?.HashBlackList || '无'
+          }\n`,
+          (HashBlackList: string) => {
+            if (!HashBlackList) resolve(undefined)
+            resolve(HashBlackList.split(','))
+          }
+        )
+        if (filter?.HashBlackList?.length) {
+          rl.write(filter.HashBlackList.join(','))
+        }
+      })
       return this._buildEpisodeFilter(episodes, filter)
     }
     console.log('筛选完成！')
@@ -428,6 +450,11 @@ export default class MikanAni {
       title: item.title || '',
       link: item.link || '',
       torrent: item.enclosure?.url || '',
+      torrentHash:
+        item.enclosure?.url?.replace(
+          /https:\/\/mikanani.me\/Download\/\d{8}\/([^/.]*)\.torrent/g,
+          '$1'
+        ) || '',
       index: this._parseEpisodeNumber(item.title || ''),
       pubDate: item.torrent.pubDate?.[0]
         ? new Date(item.torrent.pubDate?.[0])

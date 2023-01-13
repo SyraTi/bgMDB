@@ -2,11 +2,13 @@ type BangumiEpisodesFilter = {
   includes?: string[]
   excludes?: string[]
   regexp?: string
+  HashBlackList?: string[]
 }
 type BangumiEpisode = {
   title: string
   link: string
   torrent: string
+  torrentHash: string
   index: number
   pubDate: Date
 }
