@@ -74,6 +74,12 @@ export default class Subscription {
   })
   filter: BangumiEpisodesFilter = {}
 
+  @Column({
+    type: 'boolean',
+    default: true,
+  })
+  enabled: boolean
+
   @CreateDateColumn({
     name: 'created_at',
   })

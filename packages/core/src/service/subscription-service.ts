@@ -1,8 +1,25 @@
 import { DataSource, DeepPartial, Repository, UpdateResult } from 'typeorm'
 import { dbReady } from './data-source.js'
 import { Subscription, Bangumi, Season, Episode } from './entity/index.js'
+import MikanRssResolver from '../mikan-rss-resolver.class.js'
+import RssResolver from '../rss-resolver.js'
+import TMDB from '../tmdb.class.js'
+
+type ChildOfRssResolver = (new (link: string) => RssResolver) &
+  typeof RssResolver
 
 export default class SubscriptionService {
+  private static readonly _registeredRssResolver: Map<
+    string,
+    ChildOfRssResolver
+  > = new Map<string, ChildOfRssResolver>([
+    [MikanRssResolver.ID, MikanRssResolver],
+  ])
+
+  public static registerRssResolver(Resolver: ChildOfRssResolver) {
+    SubscriptionService._registeredRssResolver.set(Resolver.ID, Resolver)
+  }
+
   private readonly _dbReady: Promise<DataSource>
 
   private _subscriptionRepo: Repository<Subscription>
@@ -27,30 +44,20 @@ export default class SubscriptionService {
     subscription: Pick<
       Subscription,
       'tmdbLink' | 'rssLink' | 'resolver' | 'filter'
-    >,
-    bangumi: Pick<
-      Bangumi,
-      | 'tmdbID'
-      | 'tmdbLink'
-      | 'chineseName'
-      | 'localName'
-      | 'desc'
-      | 'releaseYear'
-    >,
-    season: Pick<
-      Season,
-      'tmdbLink' | 'index' | 'title' | 'desc' | 'releaseYear'
-    >,
-    episodes: Pick<
-      Episode,
-      'index' | 'title' | 'desc' | 'tmdbLink' | 'pubDate'
-    >[]
+    >
   ): Promise<void | {
     bangumi: Bangumi
     season: Season
     subscription: Subscription
     episodes: Episode[]
   }> {
+    const tmdb = new TMDB(subscription.tmdbLink)
+    if (!tmdb.valid) {
+      throw new Error('TMDB season link is not valid.')
+    }
+    const bangumi = await tmdb.bangumiMeta
+    const season = await tmdb.seasonMeta
+    const episodes = await tmdb.episodesMeta
     const dbSource = await this._dbReady
     return dbSource.manager.transaction<{
       bangumi: Bangumi
@@ -137,13 +144,31 @@ export default class SubscriptionService {
     })
   }
 
-  async updateSubscription(
+  async editSubscription(
     id: number,
     entityLike: DeepPartial<Subscription>
   ): Promise<UpdateResult> {
     await this._dbReady
     return this._subscriptionRepo.update(id, entityLike)
   }
+
+  /* in development
+  async updateSubscription(id: number) {
+    // 读取数据库
+    const subscription = await this._subscriptionRepo.findOneBy({ id })
+    if (!subscription) return
+    // 读取progress,rsslink 以及rssresolver
+    const { progress, rssLink, resolver } = subscription
+    // 通过rss resolver 进行解析 得到最新的集列表
+    const Resolver = SubscriptionService._registeredRssResolver.get(resolver)
+    if (!Resolver) return
+    const rssResolver = new Resolver(rssLink)
+
+    // 与progress进行对比
+    // 将未下载的集发送给aria
+    // 标记最新的progress
+  }
+  */
 
   // async listSubscription(): Promise<Array<Subscription>> {
   //   const allBangumis = this._bangumiRepo.find()

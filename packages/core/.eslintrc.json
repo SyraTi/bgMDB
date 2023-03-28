@@ -29,6 +29,7 @@
         "no-restricted-syntax": "off",
         "class-methods-use-this": "off",
         "max-classes-per-file": "off",
-        "consistent-return": "off"
+        "consistent-return": "off",
+        "@typescript-eslint/no-useless-constructor": "off"
     }
 }

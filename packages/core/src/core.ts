@@ -1,20 +1,9 @@
 import 'reflect-metadata'
 import { DeepPartial, UpdateResult } from 'typeorm'
 import MikanRssResolver from './mikan-rss-resolver.class.js'
-import TMDB from './tmdb.class.js'
-import RssResolver from './rss-resolver.js'
 import { service, entity } from './service/index.js'
 
 export default class BgMDB {
-  private static readonly _resolverIDs: Map<string, typeof RssResolver> =
-    new Map<string, typeof RssResolver>([
-      [MikanRssResolver.ID, MikanRssResolver],
-    ])
-
-  public static registerRssResolver(Resolver: typeof RssResolver) {
-    BgMDB._resolverIDs.set(Resolver.ID, Resolver)
-  }
-
   /**
    * 添加订阅
    * @param {string} tmdbSeasonLink tmdb的季链接
@@ -34,21 +23,12 @@ export default class BgMDB {
     season: entity.Season
     subscription: entity.Subscription
   }> {
-    const tmdb = new TMDB(tmdbSeasonLink)
-    if (!tmdb.valid) {
-      throw new Error('TMDB season link is not valid.')
-    }
-    return service.subscriptionService.createSubscription(
-      {
-        tmdbLink: tmdb.seasonLink,
-        filter,
-        rssLink,
-        resolver,
-      },
-      await tmdb.bangumiMeta,
-      await tmdb.seasonMeta,
-      await tmdb.episodesMeta
-    )
+    return service.subscriptionService.createSubscription({
+      tmdbLink: tmdbSeasonLink,
+      filter,
+      rssLink,
+      resolver,
+    })
   }
 
   /**
@@ -75,7 +55,7 @@ export default class BgMDB {
       >
     >
   ): Promise<UpdateResult> {
-    return service.subscriptionService.updateSubscription(id, {
+    return service.subscriptionService.editSubscription(id, {
       tmdbLink,
       rssLink,
       resolver,
@@ -88,14 +68,8 @@ export default class BgMDB {
 
   public remove() {}
 
-  public update() {
-    // 读取数据库
-    // 读取progress
-    // 读取rsslink 以及rssresolver
-    // 通过rss resolver 进行解析 得到最新的集列表
-    // 与progress进行对比
-    // 将未下载的集发送给aria
-    // 标记最新的progress
+  public async update(id: number) {
+    service.subscriptionService.updateSubscription(id)
   }
 
   public mark() {}
