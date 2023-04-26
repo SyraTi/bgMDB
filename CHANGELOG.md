@@ -1,6 +1,11 @@
 # Changelog
 
 
+## 1.0.8 - 2023-04-26
+
+### BUG FIX
+- 锁定`chinese-numbers-to-arabic`依赖包版本，修复该依赖包安装版本过高导致的问题。
+
 ## 1.0.6 - 2023-01-13
 
 ### FEATURE
