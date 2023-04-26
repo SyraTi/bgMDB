@@ -1,0 +1,22 @@
+{
+  "name": "bgmdb",
+  "version": "1.0.6",
+  "description": "A CLI/Web tool for subscribing to bangumi on TMDB.",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SyraTi/bgMDB.git"
+  },
+  "author": "SyraTi",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/SyraTi/bgMDB/issues"
+  },
+  "homepage": "https://github.com/SyraTi/bgMDB#readme",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "^6.4.1"
+  }
+}
