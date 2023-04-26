@@ -1,6 +1,6 @@
 {
   "name": "bgmdb",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A CLI tool for subscribing to bangumi on TMDB.",
   "type": "module",
   "files": [
