@@ -2,10 +2,10 @@
 import fs from 'fs'
 import path from 'path'
 import { program } from 'commander'
-import MikanAni from './MikanAni.class.js'
-import TMDB from './TMDB.class.js'
-import rl from './readline.js'
-import aria2Conn from './aria2Conn.js'
+import MikanAni from './MikanAni.class'
+import TMDB from './tmdb.class.js'
+import rl from './readline'
+import aria2Conn from './aria2Conn'
 
 const BGMDB_SESSION_PATH = process.env.BGMDB_SESSION_PATH ?? './bgmdb.session'
 

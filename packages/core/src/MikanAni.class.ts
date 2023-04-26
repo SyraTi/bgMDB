@@ -1,8 +1,8 @@
 import Parser from 'rss-parser'
 import path from 'path'
 import CN2Arabic from 'chinese-numbers-to-arabic'
-import rl from './readline.js'
-import aria2Conn from './aria2Conn.js'
+import rl from './readline'
+import aria2Conn from './aria2Conn'
 
 const rssParser = new Parser<{}, { torrent: { pubDate: [Date] } }>({
   customFields: {
@@ -143,12 +143,12 @@ export default class MikanAni {
 
   /**
    * 交互输入RSS链接
-   * @param {BangumiSeason} season 季对象
+   * @param {BangumiSeasonMeta} season 季对象
    * @private
    *
    * @return {Promise<string>} 最终确认的RSS链接
    */
-  private static async _inputRSS(season: BangumiSeason): Promise<string> {
+  private static async _inputRSS(season: BangumiSeasonMeta): Promise<string> {
     return new Promise<string>((resolve) => {
       rl.question(
         `请输入《${season.index}-${season.title}》对应的蜜柑计划RSS链接，如需要略过本季可以直接留空\n` +
@@ -430,12 +430,14 @@ export default class MikanAni {
 
   /**
    * 使用RSS信息填充季对象
-   * @param {BangumiSeason} season 季对象
+   * @param {BangumiSeasonMeta} season 季对象
    * @private
    *
-   * @return {Promise<BangumiSeason>} 填充完成后的季对象
+   * @return {Promise<BangumiSeasonMeta>} 填充完成后的季对象
    */
-  private static async _feed(season: BangumiSeason): Promise<BangumiSeason> {
+  private static async _feed(
+    season: BangumiSeasonMeta
+  ): Promise<BangumiSeasonMeta> {
     if (!season.RSS) return season
     season.episodes = await this._getEpisodesFromFeed(season.RSS)
     season.filter = await this._buildEpisodeFilter(season.episodes)

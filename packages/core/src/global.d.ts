@@ -13,6 +13,13 @@ type BangumiEpisode = {
   pubDate: Date
 }
 
+type BangumiEpisodesMeta = {
+  index: number
+  title: string
+  desc: string
+  tmdbLink: string
+  pubDate: Date
+}
 type BangumiSeason = {
   index: string
   title: string
@@ -21,15 +28,30 @@ type BangumiSeason = {
   episodes: BangumiEpisode[]
   filter?: BangumiEpisodesFilter
 }
+type BangumiSeasonMeta = {
+  tmdbLink: string
+  index: number
+  title: string
+  desc: string
+  releaseYear: Date
+}
 
-type BangumiMeta = {
+type BangumiMetaBak = {
   chineseName: string
   releaseDate: string
   localName: string
-  seasons: BangumiSeason[]
-  link: string
+  seasons: BangumiSeasonMeta[]
+  tmdbLink: string
   id: string
   downloadTasks: BangumiDownloadTask[]
+}
+type BangumiMeta = {
+  tmdbID: string
+  tmdbLink: string
+  localName: string
+  chineseName: string
+  desc: string
+  releaseYear: Date
 }
 
 type BangumiDownloadTask = {

@@ -1,4 +1,4 @@
-import readline from 'readline'
+import readline from 'src/readline'
 
 export default readline.createInterface({
   input: process.stdin,

@@ -26,6 +26,9 @@
         "no-console": "off",
         "radix": "off",
         "no-param-reassign": "off",
-        "no-restricted-syntax": "off"
+        "no-restricted-syntax": "off",
+        "class-methods-use-this": "off",
+        "max-classes-per-file": "off",
+        "consistent-return": "off"
     }
 }
