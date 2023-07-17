@@ -1,7 +1,7 @@
 {
   "name": "bgmdb",
-  "version": "1.0.6",
-  "description": "A CLI/Web tool for subscribing to bangumi on TMDB.",
+  "version": "2.0.0",
+  "description": "A Web tool for subscribing to bangumi on TMDB.",
   "private": true,
   "repository": {
     "type": "git",
