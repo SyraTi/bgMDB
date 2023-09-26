@@ -1,0 +1,16 @@
+{
+  "name": "@bgmdb/core",
+  "packageManager": "yarn@3.6.1",
+  "description": "",
+  "version": "2.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.22.5",
+    "typescript": "^5.1.6"
+  }
+}

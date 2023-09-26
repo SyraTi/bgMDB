@@ -18,5 +18,9 @@
   ],
   "devDependencies": {
     "lerna": "^6.4.1"
+  },
+  "packageManager": "yarn@3.6.1",
+  "scripts": {
+    "dev": "lerna run dev"
   }
 }
